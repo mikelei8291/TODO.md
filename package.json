@@ -2,6 +2,7 @@
   "name": "todo-md",
   "displayName": "TODO.md",
   "description": "The TODO list on your side!",
+  "publisher": "ThunderStudio",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.54.0"
