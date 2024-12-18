@@ -1,0 +1,65 @@
+#todo-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#todo-list li {
+    align-items: center;
+    display: flex;
+    gap: .25rem;
+    margin-bottom: .5rem;
+}
+
+#todo-list input[type=checkbox] {
+    cursor: pointer;
+    margin: 0;
+}
+
+#todo-list input[type=checkbox]:focus {
+    outline: none;
+}
+
+#todo-list label {
+    cursor: pointer;
+    flex: 1 0;
+    font-size: var(--vscode-editor-font-size);
+    margin: 0 .25rem;
+    width: calc(100% - 57px - 1.25rem);
+    word-wrap: break-word;
+}
+
+#todo-list label[contenteditable=true] {
+    border-bottom: 1px solid var(--vscode-inputOption-activeBorder);
+    cursor: text;
+}
+
+#todo-list label:focus-visible {
+    outline: none;
+}
+
+#todo-list li input:checked + label {
+    text-decoration: line-through;
+}
+
+#todo-list label[contenteditable=true] + button,
+#todo-list li:hover button {
+    visibility: visible;
+}
+
+#todo-list li button {
+    background-color: transparent;
+    border: none;
+    border-radius: 5px;
+    box-sizing: content-box;
+    color: var(--vscode-icon-foreground);
+    cursor: pointer;
+    height: 16px;
+    padding: 3px;
+    visibility: hidden;
+    width: 16px;
+}
+
+#todo-list li button:hover {
+    background-color: var(--vscode-toolbar-hoverBackground);
+}
