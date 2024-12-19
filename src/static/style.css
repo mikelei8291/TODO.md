@@ -12,12 +12,29 @@
 }
 
 #todo-list input[type=checkbox] {
+    align-items: center;
+    appearance: none;
+    background-color: var(--vscode-settings-checkboxBackground);
+    border: 1px solid var(--vscode-settings-checkboxBorder);
+    border-radius: 3px;
+    color: inherit;
     cursor: pointer;
+    display: flex;
+    height: 18px;
+    justify-content: center;
     margin: 0;
+    width: 18px;
+}
+
+#todo-list input[type=checkbox]:checked::after {
+    content: "\eab2";
+    font-family: codicon;
+    font-size: 16px;
 }
 
 #todo-list input[type=checkbox]:focus {
-    outline: none;
+    outline: 1px solid var(--vscode-focusBorder);
+    outline-offset: -1px;
 }
 
 #todo-list label {
