@@ -3,7 +3,6 @@
 out/**
 node_modules/**
 src/**
-!src/static
 .gitignore
 .yarnrc
 esbuild.js
@@ -13,3 +12,12 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+
+# Webview resources
+!src/static
+
+# PNPM lock file
+**/pnpm-lock.yaml
+
+# TODO
+**/TODO.md
