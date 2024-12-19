@@ -38,6 +38,7 @@
 }
 
 #todo-list label {
+    color: var(--vscode-list-activeSelectionForeground);
     cursor: pointer;
     flex: 1 0;
     font-size: var(--vscode-editor-font-size);
@@ -56,6 +57,7 @@
 }
 
 #todo-list li input:checked + label {
+    color: var(--vscode-foreground);
     text-decoration: line-through;
 }
 
