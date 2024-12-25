@@ -64,14 +64,22 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
         }
     }
 
-    public load = async (document: vscode.TextDocument | void) => {
+    private setBadge(items: TodoItem[]) {
+        const value = items.filter(item => !item.checked).length;
+        if (this.view) {
+            this.view.badge = { tooltip: value ? `${value} undone task${value > 1 ? "s" : ""}` : "All done!", value };
+        }
+    }
+
+    private load = async (document: vscode.TextDocument | void) => {
         const items = await this.loadItems(document);
         if (items) {
             this.view?.webview.postMessage({ type: "setItems", args: items });
+            this.setBadge(items);
         }
     };
 
-    public save = async (items: TodoItem[]) => {
+    private save = async (items: TodoItem[]) => {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri;
         if (workspaceFolder) {
             const file = vscode.Uri.joinPath(workspaceFolder, "TODO.md");
@@ -83,6 +91,7 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
                 edit.createFile(file, { contents: this.serialize(items) });
                 vscode.workspace.applyEdit(edit);
             }
+            this.setBadge(items);
         }
     };
 
