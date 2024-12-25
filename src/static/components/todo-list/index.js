@@ -17,10 +17,9 @@ export class TodoList extends HTMLUListElement {
     }
 
     setItems(items) {
-        this.replaceChildren();
-        items.filter(item => item.text !== "").forEach((item, index) => {
-            this.appendChild(new ListItem(index, item.text, item.checked));
-        });
+        this.replaceChildren(
+            ...items.filter(item => item.text !== "").map((item, index) => new ListItem(index, item.text, item.checked))
+        );
     }
 
     save() {
