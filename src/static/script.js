@@ -8,7 +8,7 @@ window.addEventListener("message", (event) => {
     const message = event.data;
     switch (message.type) {
         case "addItem":
-            todoList.addItem(message.args[0]);
+            todoList.addItem();
             break;
         case "setItems":
             todoList.setItems(message.args);

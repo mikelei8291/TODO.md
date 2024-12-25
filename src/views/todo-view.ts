@@ -32,11 +32,14 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
         this.load();
     }
 
-    public async addItem(inView: boolean = false) {
-        const text = inView ? "" : await vscode.window.showInputBox({ placeHolder: "TODO" });
-        if (text !== undefined) {
-            vscode.commands.executeCommand("todo-md.view.focus");
-            this.view?.webview.postMessage({ type: "addItem", args: [text] });
+    public async addItem() {
+        if (this.view?.visible) {
+            await this.view.webview.postMessage({ type: "addItem" });
+        } else {
+            const text = (await vscode.window.showInputBox({ placeHolder: "TODO" }))?.trim();
+            if (text) {
+                this.save((await this.loadItems() ?? []).concat({ text, checked: false }));
+            }
         }
     }
 
@@ -51,14 +54,20 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
             .map(m => ({ text: m.groups?.text ?? "", checked: m.groups?.checked === "x" }));
     }
 
-    public load = async (document: vscode.TextDocument | void) => {
+    private async loadItems(document: vscode.TextDocument | void): Promise<TodoItem[] | undefined> {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri;
         if (workspaceFolder) {
             const file = vscode.Uri.joinPath(workspaceFolder, "TODO.md");
-            if (document === undefined || (document && document.fileName === file.fsPath)) {
-                const items = this.deserialize(await vscode.workspace.fs.readFile(file));
-                this.view?.webview.postMessage({ type: "setItems", args: items });
+            if (document === undefined || document.fileName === file.fsPath) {
+                return this.deserialize(await vscode.workspace.fs.readFile(file));
             }
+        }
+    }
+
+    public load = async (document: vscode.TextDocument | void) => {
+        const items = await this.loadItems(document);
+        if (items) {
+            this.view?.webview.postMessage({ type: "setItems", args: items });
         }
     };
 

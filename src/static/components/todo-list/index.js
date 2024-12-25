@@ -7,15 +7,13 @@ export class TodoList extends HTMLUListElement {
         this.vscode = vscode;
     }
 
-    addItem(text = "", index = null) {
+    addItem(index = null) {
         if (!index) {
             index = this.childElementCount;
         }
-        const item = new ListItem(index, text);
+        const item = new ListItem(index, "");
         this.insertBefore(item, this.children[index] ?? null);
-        if (text === "") {
-            item.edit();
-        }
+        item.edit();
     }
 
     setItems(items) {

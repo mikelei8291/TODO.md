@@ -35,11 +35,6 @@
       {
         "command": "todo-md.add-item",
         "category": "TODO.md",
-        "title": "Add TODO Item"
-      },
-      {
-        "command": "todo-md.add-item-in-view",
-        "category": "TODO.md",
         "title": "Add TODO Item",
         "icon": "$(add)"
       }
@@ -47,7 +42,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "todo-md.add-item-in-view",
+          "command": "todo-md.add-item",
           "group": "navigation",
           "when": "view == todo-md.view && (workbenchState == folder || workbenchState == workspace)"
         }

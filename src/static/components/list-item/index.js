@@ -35,7 +35,7 @@ export class ListItem extends HTMLLIElement {
             if (event.type === "blur" || event.key === "Enter" || event.key === "Escape") {
                 this.label.contentEditable = false;
                 if (event.ctrlKey) {
-                    this.parentElement.addItem("", this.index + 1);
+                    this.parentElement.addItem(this.index + 1);
                 }
                 const todoList = this.parentElement;
                 if (this.label.innerText.length === 0) {

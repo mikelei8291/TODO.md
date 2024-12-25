@@ -10,9 +10,6 @@ export function activate(context: vscode.ExtensionContext) {
         context.subscriptions.push(vscode.commands.registerCommand(
             "todo-md.add-item", async () => await provider.addItem()
         ));
-        context.subscriptions.push(vscode.commands.registerCommand(
-            "todo-md.add-item-in-view", async () => await provider.addItem(true)
-        ));
     } else {
         const provider = new EmptyViewProvider(context.extensionUri);
         context.subscriptions.push(vscode.window.registerWebviewViewProvider(EmptyViewProvider.viewType, provider));
