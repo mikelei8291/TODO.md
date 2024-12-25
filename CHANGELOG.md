@@ -1,5 +1,12 @@
 # Change Log
 
+## [0.0.3] - 2024-12-25
+
+- Merry Christmas! 🎄
+- Fix adding new list items without focusing the view
+- Display undone task count on the badge of the view
+- Refactor some code
+
 ## [0.0.2] - 2024-12-19
 
 - build: fix missing icons
