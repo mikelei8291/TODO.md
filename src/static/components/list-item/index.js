@@ -66,8 +66,9 @@ export class ListItem extends HTMLLIElement {
     };
 
     delete = () => {
+        const todoList = this.parentElement;
         this.remove();
-        document.getElementById("todo-list").save();
+        todoList.save();
     };
 }
 
