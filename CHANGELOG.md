@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.5] - 2024-12-27
+
+- Highlight hovered list items
+- Fix checkbox width
+
 ## [0.0.4] - 2024-12-27
 
 - Support multi-level TODO list
