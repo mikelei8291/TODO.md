@@ -1,15 +1,15 @@
 import { createElement } from "../utils.js";
 
 export class ListItem extends HTMLLIElement {
-    constructor(index, text, checked = false) {
+    constructor(text = "", checked = false) {
         super();
-        this.index = index;
+        const id = crypto.randomUUID();
 
-        this.checkbox = createElement("input", { type: "checkbox", id: `todo-md-cb-${index}` });
+        this.checkbox = createElement("input", { type: "checkbox", id });
         this.checkbox.checked = checked;
         this.checkbox.addEventListener("change", this.change);
 
-        this.label = createElement("label", { for: `todo-md-cb-${index}` }, text);
+        this.label = createElement("label", { for: id }, text);
         this.label.addEventListener("click", (event) => {
             if (this.label.isContentEditable) {
                 event.preventDefault();
@@ -24,7 +24,27 @@ export class ListItem extends HTMLLIElement {
         this.deleteBtn = createElement("button", {}, createElement("i", { class: "codicon codicon-remove" }));
         this.deleteBtn.addEventListener("click", this.delete);
 
-        this.append(this.checkbox, this.label, this.editBtn, this.deleteBtn);
+        this.append(createElement("div", {}, this.checkbox, this.label, this.editBtn, this.deleteBtn));
+    }
+
+    get subList() {
+        return this.querySelector("ul");
+    }
+
+    set subList(list) {
+        this.subList?.remove();
+        this.appendChild(list);
+    }
+
+    get checked() {
+        return this.subList?.checked ?? this.checkbox.checked;
+    }
+
+    set checked(value) {
+        this.checkbox.checked = value;
+        if (this.subList) {
+            this.subList.checked = value;
+        }
     }
 
     save = (event) => {
@@ -35,19 +55,22 @@ export class ListItem extends HTMLLIElement {
             if (event.type === "blur" || event.key === "Enter" || event.key === "Escape") {
                 this.label.contentEditable = false;
                 if (event.ctrlKey) {
-                    this.parentElement.addItem(this.index + 1);
+                    this.parentElement.addItem(this);
                 }
-                const todoList = this.parentElement;
+                const parent = this.parentElement;
                 if (this.label.innerText.length === 0) {
                     this.remove();
                 }
-                todoList.save();
+                parent.dispatchEvent(new CustomEvent("state-change", { bubbles: true }));
             }
         }
     };
 
     change = () => {
-        this.parentElement.save();
+        if (this.subList) {
+            this.subList.checked = this.checkbox.checked;
+        }
+        this.dispatchEvent(new CustomEvent("state-change", { bubbles: true }));
     };
 
     edit = () => {
@@ -66,10 +89,18 @@ export class ListItem extends HTMLLIElement {
     };
 
     delete = () => {
-        const todoList = this.parentElement;
+        const parent = this.parentElement;
         this.remove();
-        todoList.save();
+        parent.dispatchEvent(new CustomEvent("state-change", { bubbles: true }));
     };
+
+    toArray() {
+        const arr = [{ text: this.label.innerText, checked: this.checkbox.checked }];
+        if (this.subList) {
+            arr.push(this.subList.toArray());
+        }
+        return arr;
+    }
 }
 
 customElements.define("list-item", ListItem, { extends: "li" });

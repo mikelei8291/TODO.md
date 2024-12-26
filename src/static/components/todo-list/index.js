@@ -3,29 +3,55 @@ import { ListItem } from "../list-item/index.js";
 export class TodoList extends HTMLUListElement {
     constructor(vscode) {
         super();
-        this.id = "todo-list";
         this.vscode = vscode;
+        this.addEventListener("state-change", () => {
+            if (!this.isRoot) {
+                this.parentElement.checkbox.checked = this.checked;
+                this.parentElement.checkbox.indeterminate = this.indeterminate;
+            }
+        });
     }
 
-    addItem(index = null) {
-        if (!index) {
-            index = this.childElementCount;
+    get checked() {
+        return Array.from(this.children).every(item => item.checked);
+    }
+
+    set checked(value) {
+        Array.from(this.children).forEach(item => item.checked = value);
+    }
+
+    get indeterminate() {
+        return Array.from(this.children).some(item => item.checked || item.checkbox.indeterminate) && !this.checked;
+    }
+
+    get isRoot() {
+        return this.parentElement === document.body;
+    }
+
+    addItem(element = null) {
+        if (!element) {
+            element = this.lastElementChild;
         }
-        const item = new ListItem(index, "");
-        this.insertBefore(item, this.children[index] ?? null);
+        const item = new ListItem();
+        element.after(item);
         item.edit();
     }
 
     setItems(items) {
-        this.replaceChildren(
-            ...items.filter(item => item.text !== "").map((item, index) => new ListItem(index, item.text, item.checked))
-        );
+        this.replaceChildren();
+        items.forEach(item => {
+            if (Array.isArray(item)) {
+                const todoList = new TodoList(this.vscode);
+                todoList.setItems(item);
+                this.lastElementChild.subList = todoList;
+            } else {
+                this.appendChild(new ListItem(item.text, item.checked));
+            }
+        });
     }
 
-    save() {
-        this.vscode.postMessage(
-            Array.from(this.children).map(item => ({ text: item.label.innerText, checked: item.checkbox.checked }))
-        );
+    toArray() {
+        return Array.from(this.children).flatMap(item => item.toArray());
     }
 }
 

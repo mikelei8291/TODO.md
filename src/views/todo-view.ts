@@ -6,14 +6,16 @@ interface TodoItem {
     checked: boolean;
 }
 
-const MD_REGEX = /^- \[(?<checked>x| )\] (?<text>.+)$/;
+type TodoList = (TodoItem | TodoList)[];
+
+const MD_REGEX = /^(?<indent> *)- \[(?<checked>x| )\] (?<text>.+)$/;
 
 export class TodoViewProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = "todo-md.view";
 
     private view?: vscode.WebviewView;
 
-    constructor(private readonly extensionUri: vscode.Uri) {}
+    constructor(private readonly extensionUri: vscode.Uri, private readonly tabSize: number = 4) {}
 
     public resolveWebviewView(
         webviewView: vscode.WebviewView, _context: vscode.WebviewViewResolveContext, _token: vscode.CancellationToken
@@ -43,18 +45,47 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
         }
     }
 
-    private serialize(items: TodoItem[]): Uint8Array {
-        return new TextEncoder().encode(items.map(item => `- [${item.checked ? "x" : " "}] ${item.text}`).join("\n"));
+    private _serialize(items: TodoList, indent: number): string {
+        return items.map(item => {
+            if (Array.isArray(item)) {
+                return this._serialize(item, indent + this.tabSize);
+            } else {
+                return `${" ".repeat(indent)}- [${item.checked ? "x" : " "}] ${item.text}`;
+            }
+        }).join("\n");
     }
 
-    private deserialize(content: Uint8Array): TodoItem[] {
-        return new TextDecoder().decode(content).split("\n")
+    private serialize(items: TodoList): Uint8Array {
+        return new TextEncoder().encode(this._serialize(items, 0));
+    }
+
+    private deserialize(content: Uint8Array): TodoList {
+        const stack: { todoList: TodoList; indent: number; }[] = [{ todoList: [], indent: 0 }];
+        new TextDecoder().decode(content).split("\n")
             .map(s => s.match(MD_REGEX))
             .filter(m => !!m)
-            .map(m => ({ text: m.groups?.text ?? "", checked: m.groups?.checked === "x" }));
+            .map(m => {
+                const { indent, checked, text } = m.groups!;
+                return { indent: Math.floor(indent.length / this.tabSize), checked: checked === "x", text };
+            })
+            .forEach(({ indent, checked, text }) => {
+                const currentIndent = stack[stack.length - 1].indent;
+                if (indent === currentIndent) {
+                    stack[stack.length - 1].todoList.push({ text, checked });
+                } else if (indent > currentIndent) {
+                    stack.push({ todoList: [{ text, checked }], indent });
+                } else {
+                    while (stack.length > 0 && stack[stack.length - 1].indent > indent) {
+                        const nestedList = stack.pop()!.todoList;
+                        stack[stack.length - 1].todoList.push(nestedList);
+                    }
+                    stack[stack.length - 1].todoList.push({ text, checked });
+                }
+            });
+        return stack.pop()!.todoList;
     }
 
-    private async loadItems(document: vscode.TextDocument | void): Promise<TodoItem[] | undefined> {
+    private async loadItems(document: vscode.TextDocument | void): Promise<TodoList | undefined> {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri;
         if (workspaceFolder) {
             const file = vscode.Uri.joinPath(workspaceFolder, "TODO.md");
@@ -64,8 +95,8 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
         }
     }
 
-    private setBadge(items: TodoItem[]) {
-        const value = items.filter(item => !item.checked).length;
+    private setBadge(items: TodoList) {
+        const value = items.filter(item => !Array.isArray(item) && !item.checked).length;
         if (this.view) {
             this.view.badge = { tooltip: value ? `${value} undone task${value > 1 ? "s" : ""}` : "All done!", value };
         }
@@ -79,7 +110,7 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
         }
     };
 
-    private save = async (items: TodoItem[]) => {
+    private save = async (items: TodoList) => {
         const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri;
         if (workspaceFolder) {
             const file = vscode.Uri.joinPath(workspaceFolder, "TODO.md");
