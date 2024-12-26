@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.0.4] - 2024-12-27
+
+- Support multi-level TODO list
+- Implement indeterminate state of checkboxes
+
 ## [0.0.3] - 2024-12-25
 
 - Merry Christmas! 🎄
