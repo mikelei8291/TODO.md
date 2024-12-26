@@ -44,6 +44,7 @@ export class TodoList extends HTMLUListElement {
                 const todoList = new TodoList(this.vscode);
                 todoList.setItems(item);
                 this.lastElementChild.subList = todoList;
+                this.lastElementChild.checkbox.indeterminate = todoList.indeterminate;
             } else {
                 this.appendChild(new ListItem(item.text, item.checked));
             }
