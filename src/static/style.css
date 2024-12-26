@@ -16,6 +16,10 @@
     margin-bottom: .5rem;
 }
 
+#todo-list li div:hover {
+    background-color: var(--vscode-list-hoverBackground);
+}
+
 #todo-list input[type=checkbox] {
     align-items: center;
     appearance: none;
