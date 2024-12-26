@@ -58,7 +58,7 @@
     flex: 1 0;
     font-size: var(--vscode-editor-font-size);
     margin: 0 .25rem;
-    width: calc(100% - 57px - 1.25rem);
+    width: calc(100% - 62px - 1.25rem);
     word-wrap: break-word;
 }
 
