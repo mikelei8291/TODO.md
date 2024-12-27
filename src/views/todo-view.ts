@@ -82,6 +82,10 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
                     stack[stack.length - 1].todoList.push({ text, checked });
                 }
             });
+        while (stack.length > 1) {
+            const nestedList = stack.pop()!.todoList;
+            stack[stack.length - 1].todoList.push(nestedList);
+        }
         return stack.pop()!.todoList;
     }
 
