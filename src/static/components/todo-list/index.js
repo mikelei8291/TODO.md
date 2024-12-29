@@ -6,8 +6,12 @@ export class TodoList extends HTMLUListElement {
         this.vscode = vscode;
         this.addEventListener("state-change", () => {
             if (!this.isRoot) {
-                this.parentElement.checkbox.checked = this.checked;
-                this.parentElement.checkbox.indeterminate = this.indeterminate;
+                if (this.childElementCount === 0) {
+                    this.remove();
+                } else {
+                    this.parentElement.checkbox.checked = this.checked;
+                    this.parentElement.checkbox.indeterminate = this.indeterminate;
+                }
             }
         });
     }
