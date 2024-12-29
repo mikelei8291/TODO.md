@@ -102,3 +102,15 @@
 #todo-list li.dragging {
     display: none;
 }
+
+#todo-list li.drop-target:not(:has(ul)) > div {
+    border-bottom: 2px solid var(--vscode-inputOption-activeBorder);
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+}
+
+#todo-list li.drop-target > ul > li:first-child > div,
+#todo-list.drop-target > li:first-child > div {
+    border-top: 2px solid var(--vscode-inputOption-activeBorder);
+    padding-top: 8px;
+}

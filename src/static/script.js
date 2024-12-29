@@ -11,15 +11,20 @@ todoList.addEventListener("state-change", () => vscode.postMessage(todoList.toAr
 let dropTarget;
 todoList.addEventListener("dragover", (event) => {
     event.preventDefault();
-    dropTarget = Array.from(todoList.querySelectorAll("li:not(.dragging)")).map(element => {
+    let target = Array.from(todoList.querySelectorAll("li:not(.dragging)")).map(element => {
         const { y } = element.getBoundingClientRect();
         return { offset: event.clientY - (y + ITEM_HALF_HEIGHT), element };
     }).reduce(
-        (closest, item) => item.offset > 0 && item.offset <= ITEM_GAP && item.offset < closest.offset ? item : closest,
+        (closest, item) => item.offset >= 0 && item.offset <= ITEM_GAP && item.offset < closest.offset ? item : closest,
         { offset: Infinity }
     ).element;
-    if (!dropTarget && event.clientY < ITEM_HALF_HEIGHT) {
-        dropTarget = todoList;
+    if (!target && event.clientY < ITEM_HALF_HEIGHT) {
+        target = todoList;
+    }
+    if (target !== dropTarget) {
+        dropTarget?.classList?.remove("drop-target");
+        target?.classList?.add("drop-target");
+        dropTarget = target;
     }
 });
 todoList.addEventListener("drop", (event) => {
@@ -32,6 +37,7 @@ todoList.addEventListener("drop", (event) => {
         } else {
             dropTarget.after(item);
         }
+        dropTarget.classList.remove("drop-target");
     } else {
         todoList.append(item);
     }
