@@ -4,12 +4,14 @@ export class ListItem extends HTMLLIElement {
     constructor(text = "", checked = false) {
         super();
         const id = crypto.randomUUID();
+        this.id = id;
+        this.draggable = true;
 
-        this.checkbox = createElement("input", { type: "checkbox", id });
+        this.checkbox = createElement("input", { type: "checkbox", id: `cb-${id}` });
         this.checkbox.checked = checked;
         this.checkbox.addEventListener("change", this.change);
 
-        this.label = createElement("label", { for: id }, text);
+        this.label = createElement("label", { for: `cb-${id}` }, text);
         this.label.addEventListener("click", (event) => {
             if (this.label.isContentEditable) {
                 event.preventDefault();
@@ -25,6 +27,8 @@ export class ListItem extends HTMLLIElement {
         this.deleteBtn.addEventListener("click", this.delete);
 
         this.append(createElement("div", {}, this.checkbox, this.label, this.editBtn, this.deleteBtn));
+        this.addEventListener("dragstart", this.dragstart);
+        this.addEventListener("dragend", this.dragend);
     }
 
     get subList() {
@@ -47,6 +51,15 @@ export class ListItem extends HTMLLIElement {
         }
     }
 
+    dragstart(event) {
+        event.dataTransfer.setData("text/plain", event.target.id);
+        setTimeout(() => event.target.classList.add("dragging"), 0);
+    }
+
+    dragend(event) {
+        event.target.classList.remove("dragging");
+    }
+
     save = (event) => {
         if (this.label.isContentEditable) {
             if (event.key === "Escape") {
@@ -54,6 +67,7 @@ export class ListItem extends HTMLLIElement {
             }
             if (event.type === "blur" || event.key === "Enter" || event.key === "Escape") {
                 this.label.contentEditable = false;
+                this.draggable = true;
                 if (event.ctrlKey) {
                     this.parentElement.addItem(this);
                 }
@@ -77,6 +91,7 @@ export class ListItem extends HTMLLIElement {
         if (!this.label.isContentEditable) {
             this.previousText = this.label.innerText;
             this.label.contentEditable = true;
+            this.draggable = false;
         }
         if (this.label.isContentEditable) {
             this.label.focus();
