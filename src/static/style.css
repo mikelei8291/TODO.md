@@ -103,14 +103,21 @@
     display: none;
 }
 
-#todo-list li.drop-target:not(:has(ul)) > div {
-    border-bottom: 2px solid var(--vscode-inputOption-activeBorder);
-    margin-bottom: 8px;
-    padding-bottom: 8px;
+@keyframes expand {
+    0% {
+        height: 11px;
+    }
 }
 
-#todo-list li.drop-target > ul > li:first-child > div,
-#todo-list.drop-target > li:first-child > div {
-    border-top: 2px solid var(--vscode-inputOption-activeBorder);
-    padding-top: 8px;
+#todo-list #drop-target {
+    animation: expand .2s ease forwards;
+    border: 1px solid var(--vscode-inputOption-activeBorder);
+    border-radius: 4px;
+    box-sizing: border-box;
+    height: 22px;
+    width: 100%;
+}
+
+#todo-list > #drop-target {
+    margin-bottom: 8px;
 }
