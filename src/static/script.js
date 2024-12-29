@@ -6,7 +6,7 @@ const ITEM_GAP = ITEM_HALF_HEIGHT * 2 + 8;
 const vscode = acquireVsCodeApi();
 const todoList = new TodoList(vscode);
 todoList.id = "todo-list";
-todoList.addEventListener("state-change", () => vscode.postMessage(todoList.toArray()));
+todoList.addEventListener("state-change", ({ detail }) => (detail?.save ?? true) ? vscode.postMessage(todoList.toArray()) : undefined);
 
 let dropTarget;
 todoList.addEventListener("dragover", (event) => {
@@ -29,6 +29,7 @@ todoList.addEventListener("dragover", (event) => {
 });
 todoList.addEventListener("drop", (event) => {
     const item = document.getElementById(event.dataTransfer.getData("text/plain"));
+    const parent = item.parentElement;
     if (dropTarget) {
         if (dropTarget === todoList) {
             todoList.prepend(item);
@@ -41,7 +42,10 @@ todoList.addEventListener("drop", (event) => {
     } else {
         todoList.append(item);
     }
-    vscode.postMessage(todoList.toArray());
+    if (item.parentElement !== parent) {
+        parent.dispatchEvent(new CustomEvent("state-change", { bubbles: true, detail: { save: false } }));
+    }
+    item.dispatchEvent(new CustomEvent("state-change", { bubbles: true }));
 });
 
 document.body.appendChild(todoList);
