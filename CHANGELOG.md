@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.6] - 2024-12-29
+
+- Add drag and drop support for re-ordering items
+- Fix deserializing the text data of lists
+- Fix indeterminate state of checkboxes
+
 ## [0.0.5] - 2024-12-27
 
 - Highlight hovered list items
