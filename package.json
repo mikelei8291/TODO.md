@@ -3,7 +3,7 @@
   "displayName": "TODO.md",
   "description": "The TODO list on your side!",
   "publisher": "ThunderStudio",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "engines": {
     "vscode": "^1.54.0"
   },

@@ -1,33 +1,38 @@
 # Change Log
 
+## [0.0.7] - 2024-12-30
+
+- Improved drag and drop support with new placeholder style and better element position handling
+- Fixed so that removing the last item from the sub-list would also remove the sub-lit itself
+
 ## [0.0.6] - 2024-12-29
 
-- Add drag and drop support for re-ordering items
-- Fix deserializing the text data of lists
-- Fix indeterminate state of checkboxes
+- Added drag and drop support for re-ordering items
+- Fixed deserializing the text data of lists
+- Fixed indeterminate state of checkboxes
 
 ## [0.0.5] - 2024-12-27
 
-- Highlight hovered list items
-- Fix checkbox width
+- Added highlight over hovered list items
+- Fixed checkbox width
 
 ## [0.0.4] - 2024-12-27
 
-- Support multi-level TODO list
-- Implement indeterminate state of checkboxes
+- Supported multi-level TODO list
+- Implemented indeterminate state of checkboxes
 
 ## [0.0.3] - 2024-12-25
 
 - Merry Christmas! 🎄
-- Fix adding new list items without focusing the view
-- Display undone task count on the badge of the view
-- Refactor some code
+- Fixed adding new list items without focusing the view
+- Added display of undone task count on the badge of the view
+- Refactored some code
 
 ## [0.0.2] - 2024-12-19
 
-- build: fix missing icons
-- feat(style): change checkbox to VSCode native style
-- feat(style): optimize label text color
+- Fixed build script to include missing icons
+- Changed checkbox to VSCode native style
+- Optimized label text color
 
 ## [0.0.1] - 2024-12-19
 
