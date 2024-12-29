@@ -49,6 +49,7 @@ export class ListItem extends HTMLLIElement {
         if (this.subList) {
             this.subList.checked = value;
         }
+        this.checkbox.indeterminate = false;
     }
 
     dragstart(event) {
