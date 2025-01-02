@@ -1,9 +1,8 @@
 import { ListItem } from "../list-item/index.js";
 
 export class TodoList extends HTMLUListElement {
-    constructor(vscode) {
+    constructor() {
         super();
-        this.vscode = vscode;
         this.addEventListener("state-change", () => {
             if (!this.isRoot) {
                 if (this.childElementCount === 0) {
@@ -45,7 +44,7 @@ export class TodoList extends HTMLUListElement {
         this.replaceChildren();
         items.forEach(item => {
             if (Array.isArray(item)) {
-                const todoList = new TodoList(this.vscode);
+                const todoList = new TodoList();
                 todoList.setItems(item);
                 this.lastElementChild.subList = todoList;
                 this.lastElementChild.checkbox.indeterminate = todoList.indeterminate;

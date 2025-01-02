@@ -2,7 +2,7 @@ import { TodoList } from "./components/todo-list/index.js";
 import { createElement } from "./components/utils.js";
 
 const vscode = acquireVsCodeApi();
-const todoList = new TodoList(vscode);
+const todoList = new TodoList();
 todoList.id = "todo-list";
 todoList.addEventListener("state-change", ({ detail }) => (detail?.save ?? true) ? vscode.postMessage(todoList.toArray()) : undefined);
 
