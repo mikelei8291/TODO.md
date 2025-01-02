@@ -36,7 +36,11 @@ export class TodoList extends HTMLUListElement {
             element = this.lastElementChild;
         }
         const item = new ListItem();
-        element.after(item);
+        if (element) {
+            element.after(item);
+        } else {
+            this.appendChild(item);
+        }
         item.edit();
     }
 
