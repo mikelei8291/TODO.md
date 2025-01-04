@@ -112,7 +112,7 @@ export class ListItem extends HTMLLIElement {
 
     toArray() {
         const arr = [{ text: this.label.innerText, checked: this.checkbox.checked }];
-        if (this.subList) {
+        if (this.subList?.hasChildNodes()) {
             arr.push(this.subList.toArray());
         }
         return arr;
