@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.1.0] - 2025-01-04
+
+- Happy New Year!
+- First stable release
+- Added keyboard shortcuts (<kbd>Tab</kbd>, <kbd>Shift</kbd>+<kbd>Tab</kbd>) to change item indentation
+- Fixed adding new list items and serializing sub-lists
+- Removed unnecessary reference to the VSCode API
+
 ## [0.0.7] - 2024-12-30
 
 - Improved drag and drop support with new placeholder style and better element position handling
