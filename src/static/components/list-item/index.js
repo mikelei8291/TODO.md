@@ -1,3 +1,4 @@
+import { TodoList } from "../todo-list/index.js";
 import { createElement } from "../utils.js";
 
 export class ListItem extends HTMLLIElement {
@@ -18,7 +19,7 @@ export class ListItem extends HTMLLIElement {
             }
         });
         this.label.addEventListener("keydown", this.save);
-        this.label.addEventListener("blur", this.save);
+        this.label.addEventListener("blur", this.exitEdit);
 
         this.editBtn = createElement("button", {}, createElement("i", { class: "codicon codicon-edit" }));
         this.editBtn.addEventListener("click", this.edit);
@@ -61,22 +62,52 @@ export class ListItem extends HTMLLIElement {
         event.target.classList.remove("dragging");
     }
 
+    exitEdit = () => {
+        this.label.contentEditable = false;
+        this.draggable = true;
+        const parent = this.parentElement;
+        if (this.label.innerText.length === 0) {
+            this.remove();
+        }
+        parent.dispatchEvent(new CustomEvent("state-change", { bubbles: true }));
+    };
+
     save = (event) => {
         if (this.label.isContentEditable) {
-            if (event.key === "Escape") {
-                this.label.innerText = this.previousText;
-            }
-            if (event.type === "blur" || event.key === "Enter" || event.key === "Escape") {
-                this.label.contentEditable = false;
-                this.draggable = true;
-                if (event.ctrlKey) {
-                    this.parentElement.addItem(this);
-                }
-                const parent = this.parentElement;
-                if (this.label.innerText.length === 0) {
-                    this.remove();
-                }
-                parent.dispatchEvent(new CustomEvent("state-change", { bubbles: true }));
+            switch (event.key) {
+                case "Tab":
+                    event.preventDefault();
+                    this.label.removeEventListener("blur", this.exitEdit);
+                    if (event.shiftKey) {
+                        const parent = this.parentElement;
+                        const sibling = parent.closest("li");
+                        if (sibling) {
+                            sibling.after(this);
+                        }
+                        parent.dispatchEvent(new CustomEvent("state-change", { bubbles: true }));
+                    } else {
+                        const parent = this.previousElementSibling;
+                        if (parent) {
+                            if (parent.subList) {
+                                parent.subList.appendChild(this);
+                            } else {
+                                const subList = new TodoList();
+                                parent.appendChild(subList);
+                                subList.appendChild(this);
+                            }
+                        }
+                        this.dispatchEvent(new CustomEvent("state-change", { bubbles: true }));
+                    }
+                    this.edit();
+                    this.label.addEventListener("blur", this.exitEdit);
+                    break;
+                case "Escape":
+                    this.label.innerText = this.previousText;
+                case "Enter":
+                    if (event.ctrlKey) {
+                        this.parentElement.addItem(this);
+                    }
+                    this.label.blur();  // this also triggers the exitEdit() method
             }
         }
     };
