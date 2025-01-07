@@ -1,5 +1,10 @@
 # Change Log
 
+## [0.1.1] - 2025-01-07
+
+- Bundled webview files when building the extension
+- Reduced the extension build size slightly
+
 ## [0.1.0] - 2025-01-04
 
 - Happy New Year!
