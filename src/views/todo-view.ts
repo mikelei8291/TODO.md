@@ -131,11 +131,8 @@ export class TodoViewProvider implements vscode.WebviewViewProvider {
     };
 
     private render(webview: vscode.Webview) {
-        const html = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, "src", "static", "index.html"));
-        const root = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, "src", "static"));
-        const moduleRoot = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, "assets", "node_modules"));
-        return fs.readFileSync(html.fsPath, "utf-8")
-            .replaceAll("{{resourceRoot}}", root.toString())
-            .replaceAll("{{modules}}", moduleRoot.toString());
+        const html = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, "dist", "static", "index.html"));
+        const root = webview.asWebviewUri(vscode.Uri.joinPath(html, "../../"));
+        return fs.readFileSync(html.fsPath, "utf-8").replaceAll("../", `${root.toString()}`);
     }
 }

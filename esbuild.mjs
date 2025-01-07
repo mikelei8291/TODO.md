@@ -1,5 +1,5 @@
 import { context } from "esbuild";
-import { copy } from "esbuild-plugin-copy";
+import htmlPlugin from "@chialab/esbuild-plugin-html";
 
 const production = process.argv.includes('--production');
 const watch = process.argv.includes('--watch');
@@ -24,34 +24,31 @@ const esbuildProblemMatcherPlugin = {
     },
 };
 
-const esbuildCopyPlugin = copy({
-    resolveFrom: "cwd",
-    assets: [
-        {
-            from: ["./node_modules/@vscode/codicons/dist/codicon.css", "./node_modules/@vscode/codicons/dist/codicon.ttf"],
-            to: ["./assets/node_modules/@vscode/codicons/dist"]
-        }
-    ],
-    watch: true
-});
-
 async function main() {
     const ctx = await context({
         entryPoints: [
-            'src/extension.ts'
+            "src/extension.ts",
+            "src/static/index.html",
+            "src/static/empty.html"
         ],
         bundle: true,
-        format: 'cjs',
+        format: "cjs",
         minify: production,
         sourcemap: !production,
         sourcesContent: false,
-        platform: 'node',
-        outfile: 'dist/extension.js',
-        external: ['vscode'],
-        logLevel: 'silent',
+        platform: "node",
+        outdir: "dist",
+        entryNames: "[dir]/[name]",
+        assetNames: "assets/[name]-[hash]",
+        chunkNames: "[ext]/[name]-[hash]",
+        external: ["vscode"],
+        loader: {
+            ".ttf": "copy"
+        },
+        logLevel: "silent",
         plugins: [
             esbuildProblemMatcherPlugin,
-            esbuildCopyPlugin
+            htmlPlugin()
         ],
     });
     if (watch) {

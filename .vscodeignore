@@ -13,9 +13,6 @@ vsc-extension-quickstart.md
 **/*.ts
 **/.vscode-test.*
 
-# Webview resources
-!src/static
-
 # PNPM lock file
 **/pnpm-lock.yaml
 

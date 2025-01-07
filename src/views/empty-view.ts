@@ -13,7 +13,7 @@ export class EmptyViewProvider implements vscode.WebviewViewProvider {
     }
 
     private render(webview: vscode.Webview) {
-        const html = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, "src", "static", "empty.html"));
+        const html = webview.asWebviewUri(vscode.Uri.joinPath(this.extensionUri, "dist", "static", "empty.html"));
         return fs.readFileSync(html.fsPath, "utf-8");
     }
 }
